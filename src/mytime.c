@@ -8,7 +8,7 @@
 #define SCL_PIN         22
 
 
-// BCD helper functions
+
 static uint8_t bcd2bin(uint8_t v)
 {
     return ((v >> 4) * 10) + (v & 0x0F);
@@ -21,7 +21,7 @@ static uint8_t bin2bcd(uint8_t v)
 }
 
 
-// INIT
+
 esp_err_t mytime_init(void)
 {
     i2c_config_t conf = {
@@ -42,7 +42,7 @@ esp_err_t mytime_init(void)
 }
 
 
-// READ FROM RTC
+
 esp_err_t mytime_get(struct tm *out_time)
 {
     if (!out_time) return ESP_ERR_INVALID_ARG;
@@ -54,13 +54,13 @@ esp_err_t mytime_get(struct tm *out_time)
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 
 
-    // Write register pointer (0x02)
+    
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (PCF8563_ADDR << 1) | I2C_MASTER_WRITE, true);
     i2c_master_write_byte(cmd, 0x02, true);
 
 
-    // Repeated start + read
+    
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (PCF8563_ADDR << 1) | I2C_MASTER_READ, true);
 
@@ -74,7 +74,7 @@ esp_err_t mytime_get(struct tm *out_time)
     i2c_cmd_link_delete(cmd);
 
 
-    // Mask out control bits
+    
     uint8_t sec   = bcd2bin(raw[0] & 0x7F);
     uint8_t min   = bcd2bin(raw[1] & 0x7F);
     uint8_t hour  = bcd2bin(raw[2] & 0x3F);
@@ -90,8 +90,8 @@ esp_err_t mytime_get(struct tm *out_time)
     t.tm_hour = hour;
     t.tm_mday = day;
     t.tm_wday = wday;
-    t.tm_mon  = month - 1;         // struct tm uses 0–11
-    t.tm_year = year + 100;        // RTC uses 00–99 (2000-2099)
+    t.tm_mon  = month - 1;         
+    t.tm_year = year + 100;        
 
 
     *out_time = t;
@@ -99,7 +99,7 @@ esp_err_t mytime_get(struct tm *out_time)
 }
 
 
-// WRITE TO RTC
+
 esp_err_t mytime_set(const struct tm *in_time)
 {
     if (!in_time) return ESP_ERR_INVALID_ARG;
@@ -120,13 +120,13 @@ esp_err_t mytime_set(const struct tm *in_time)
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 
 
-    // Set register pointer
+    
     i2c_master_start(cmd);
     i2c_master_write_byte(cmd, (PCF8563_ADDR << 1) | I2C_MASTER_WRITE, true);
     i2c_master_write_byte(cmd, 0x02, true);
 
 
-    // Write 7 bytes
+    
     i2c_master_write(cmd, raw, 7, true);
 
 

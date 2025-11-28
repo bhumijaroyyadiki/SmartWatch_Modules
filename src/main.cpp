@@ -1,7 +1,7 @@
-// I2C devices on T-Watch:
-// 0x35 - AXP202 PMIC
-// 0x19 - BMA423 Accelerometer
-// 0x51 - PCF8563 RTC
+
+
+
+
 
 #include <Arduino.h>
 #include <WiFi.h>
@@ -12,14 +12,14 @@
 const char* ssid = "POCO X5 Pro 5G";
 const char* password = "br10012006";
 
-#define AXP_IRQ_PIN 35   // correct for T-Watch 2020 V3
+#define AXP_IRQ_PIN 35   
 
 volatile bool axpIrqFlag = false;
 bool displayOn = true;
 
 void IRAM_ATTR axpIrqHandler()
 {
-    axpIrqFlag = true;   // ISR: keep very small
+    axpIrqFlag = true;   
 }
 
 void setup()
@@ -29,32 +29,32 @@ void setup()
 
     Serial.println("Booting...");
 
-    // Init power (AXP202) - this also calls Wire.begin
+    
     if (!initPower())
     {
         Serial.println("Power init failed");
-        // still continue so you can debug
+        
     }
     else
     {
         Serial.println("Power init success");
     }
 
-    // Init RTC I2C wrapper (uses Wire, but doesn't re-install driver)
+    
     mytime_init();
 
-    // Initialize display (power already enabled in initPower)
+    
     initDisplay();
     showTimeAndDate();
 
-    // Configure AXP IRQ pin and attach ISR for side button (PEK)
+    
     pinMode(AXP_IRQ_PIN, INPUT);
     attachInterrupt(digitalPinToInterrupt(AXP_IRQ_PIN), axpIrqHandler, FALLING);
 
-    // Enable AXP PEK short-press IRQ in the PMIC
+    
     initPowerButtonIRQ();
 
-    // ----------- WiFi + NTP Sync (optional) -----------------
+    
     WiFi.begin(ssid, password);
 
     int attempt = 0;
@@ -75,9 +75,9 @@ void setup()
         struct tm ntp;
         if (getLocalTime(&ntp))
         {
-            mytime_set(&ntp);   // Store time into RTC
+            mytime_set(&ntp);   
             Serial.println("RTC updated from NTP");
-            // update displayed time
+            
             showTimeAndDate();
         }
         else
@@ -89,7 +89,7 @@ void setup()
     {
         Serial.println("WiFi not connected — using RTC time");
     }
-    // --------------------------------------------------------
+    
 }
 
 void loop()
@@ -107,8 +107,8 @@ void loop()
             if (displayOn)
             {
                 enableDisplayPower();
-                delay(200);        // allow power rails to stabilise
-                initDisplay();     // re-init the TFT after powering on
+                delay(200);        
+                initDisplay();     
                 showTimeAndDate();
             }
             else

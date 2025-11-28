@@ -16,17 +16,17 @@ void initDisplay()
 
 void showHelloWorld()
 {
-    // You can choose background
+    
     tft.fillScreen(TFT_BLACK);
 
-    // Set text color and maybe size
-    tft.setTextColor(TFT_WHITE, TFT_BLACK);   // fg, bg
-    tft.setTextSize(2);                       // 1 = small, 2 = bigger
+    
+    tft.setTextColor(TFT_WHITE, TFT_BLACK);   
+    tft.setTextSize(2);                       
 
-    // Position cursor (x, y) in pixels
+    
     tft.setCursor(10, 30);
 
-    // Print your text
+    
     tft.println("Hello, World!");
 }
 

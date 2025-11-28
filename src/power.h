@@ -9,5 +9,5 @@ bool initPower();
 void enableDisplayPower();
 void disableDisplayPower();
 
-void initPowerButtonIRQ();   // enables PEK short-press interrupt in AXP
+void initPowerButtonIRQ();   
 bool handleAxpIrqAndCheckShortPress();
